@@ -1,6 +1,8 @@
 #pragma once
 
+#include <string>
 #include <iostream>
+#include <Windows.h>
 
 #include "Globals.h"
 
@@ -42,6 +44,28 @@ bool Setup()
 
 	Uint32 renderFlags = SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC;
 	globals.renderer = SDL_CreateRenderer(globals.window, -1, renderFlags);
+
+	char buf[MAX_PATH];
+	GetModuleFileName(nullptr, buf, MAX_PATH);
+
+	std::string::size_type pos = std::string(buf).find_last_of("\\/");
+	std::string programLocation = std::string(buf).substr(0, pos);
+
+
+	// Load images
+	if (!textures.pawn.Load(programLocation + "\\..\\Images\\p.jpg"))
+		return false;
+	if (!textures.rook.Load(programLocation + "\\..\\Images\\r.jpg"))
+		return false;
+	if (!textures.knight.Load(programLocation + "\\..\\Images\\kn.jpg"))
+		return false;	
+	if (!textures.bishop.Load(programLocation + "\\..\\Images\\b.jpg"))
+		return false;
+	if (!textures.queen.Load(programLocation + "\\..\\Images\\q.jpg"))
+		return false;
+	if (!textures.king.Load(programLocation + "\\..\\Images\\k.jpg"))
+		return false;
+
 
 	// Setup the board.
 	Piece tempPiece;
@@ -113,7 +137,7 @@ bool Setup()
 
 	board.pieces[3][7] = tempPiece;
 
-	globals.currentPlayer = PLAYER_WHITE;
+	globals.currentPlayer = PLAYER_WHITE;	
 
 	return true;	
 }
